@@ -1,0 +1,460 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+body {
+  font-weight: 400;
+  font-family: "Nunito", sans-serif !important;
+}
+
+.Toastify__toast--success {
+  color: #059669 !important;
+  font-weight: 500 !important;
+  border: 1px solid #0284c7;
+}
+
+.Toastify__toast--error {
+  color: #dc2626 !important;
+  border: 1px solid #0284c7;
+  font-weight: 500 !important;
+}
+
+.Toastify__toast--info {
+  color: #0891b7 !important;
+  border: 1px solid #0284c7;
+  font-weight: 500 !important;
+}
+
+.Toastify__toast--warning {
+  color: #f59e0b !important;
+  border: 1px solid #0284c7;
+  font-weight: 500 !important;
+}
+
+#nprogress .bar {
+  background: #155e94;
+  height: 4px;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px white, 0 0 5px white;
+}
+
+#nprogress .spinner {
+  display: none;
+}
+
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  /* Firefox */
+}
+
+/* Basic TipTap editor styles (content area only, no inner border/padding) */
+.ProseMirror {
+  min-height: 200px;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* Optional: Add some basic prose styles for better readability */
+.prose {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.75;
+  color: #374151;
+  /* text-gray-700 */
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.prose h2 {
+  font-size: 1.875em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.prose h3 {
+  font-size: 1.5em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.prose p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose ul li {
+  list-style-type: disc;
+}
+
+.prose ol li {
+  list-style-type: decimal;
+}
+
+.prose blockquote {
+  border-left: 0.25rem solid #d1d5db;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  color: #6b7280;
+}
+
+.prose code {
+  background-color: #2e2b29;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1em;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+}
+
+.prose .editor-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose p[style*="text-align:center"] .editor-image,
+.prose [style*="text-align:center"] .editor-image,
+.prose .editor-image[style*="text-align:center"],
+.prose .editor-image[style*="text-align: center"] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.prose p[style*="text-align:right"] .editor-image,
+.prose [style*="text-align:right"] .editor-image,
+.prose .editor-image[style*="text-align:right"],
+.prose .editor-image[style*="text-align: right"] {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+.prose p[style*="text-align:left"] .editor-image,
+.prose [style*="text-align:left"] .editor-image,
+.prose .editor-image[style*="text-align:left"],
+.prose .editor-image[style*="text-align: left"] {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* No extra styles for dark ProseMirror to keep it borderless */
+
+.dark .prose {
+  color: #d1d5db;
+}
+
+.dark .prose blockquote {
+  border-left-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .prose code {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.is-active {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.dark .is-active {
+  background-color: #4338ca;
+  color: #e0e7ff;
+}
+
+/* Modern enhancements */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modern-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modern-shadow-lg {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Note: Avoid global transitions on all elements to prevent jank.
+   Use explicit utility classes (e.g., Tailwind transition-*) where needed. */
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lightweight floating animation for subtle background motion */
+@keyframes floatUpDown {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(16px);
+  }
+}
+
+/* Slow horizontal drift */
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-24px);
+  }
+
+  50% {
+    transform: translateX(24px);
+  }
+
+  100% {
+    transform: translateX(-24px);
+  }
+}
+
+/* Enhanced button hover effects */
+.btn-modern {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-modern::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-modern:hover::before {
+  left: 100%;
+}
+
+/* Additional animations for Featured Courses */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(21, 94, 148, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(21, 94, 148, 0.6);
+  }
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes floatUpDown {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-text-shimmer {
+  background: linear-gradient(90deg, #155e94, #3b82f6, #155e94, #3b82f6);
+  background-size: 200% 100%;
+  animation: textShimmer 3s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Table of contents styles */
+.toc-card {
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border: 1px solid rgba(21, 94, 148, 0.08);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.toc-card h3 {
+  color: #0f172a;
+}
+
+.toc-list a {
+  display: inline-block;
+  padding: 0.25rem 0.25rem;
+  border-radius: 0.25rem;
+  color: #374151;
+}
+
+.toc-list a:hover {
+  color: #0f172a;
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.toc-list .toc-level-1 {
+  font-weight: 700;
+}
+
+.toc-list .toc-level-2 {
+  padding-left: 1rem;
+  color: #475569;
+}
+
+.toc-list .toc-level-3 {
+  padding-left: 2rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Active heading highlight when hash matches */
+.toc-list a.is-active {
+  background: linear-gradient(
+    90deg,
+    rgba(79, 70, 229, 0.12),
+    rgba(79, 70, 229, 0.06)
+  );
+  color: #3730a3;
+}
+
+/* Dark mode support */
+.dark .toc-card {
+  background: linear-gradient(180deg, #0b1220, #061025);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.dark .toc-list a {
+  color: #d1d5db;
+}
+
+.dark .toc-list .toc-level-2 {
+  color: #9ca3af;
+}
+
+.dark .toc-list .toc-level-3 {
+  color: #9ca3af;
+}
+
+.animate-float-up-down {
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+
+/* Contact specific animations */
+@keyframes contactCardFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-contact-card-float {
+  animation: contactCardFloat 4s ease-in-out infinite;
+}
+
+.animate-icon-pulse {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
