@@ -23,7 +23,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CategoriesPostApi } from "@/api/categoriesPost.api";
 import { userPostSchema, type UserPostFormValues } from "./schemaValidation";
 import type { PostRequest } from "@/types/post.type";
@@ -34,7 +34,6 @@ import routes from "@/routes/routes.const";
 import useAuth from "@/context/AuthContext";
 
 export default function CreatePost() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = useAuth();

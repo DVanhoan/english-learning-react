@@ -17,7 +17,8 @@ export default function AITutor() {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const handleStopRecording = (blobUrl: string, blob: Blob) => {
+    //, blob: Blob
+    const handleStopRecording = (blobUrl: string) => {
         console.log("Recording stopped. Sending audio...");
 
         fetch(blobUrl)

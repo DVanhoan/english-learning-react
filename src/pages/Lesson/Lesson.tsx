@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CommentParent from "@/components/CommentParent"; // Giả sử bạn có component này
 import z from "zod";
 import {
   Accordion,
@@ -44,7 +43,7 @@ import { CommentApi } from "@/api/commentLesson.api";
 import { AppUtils } from "@/utils/appUtils";
 import type { Lesson } from "@/types/lesson.type";
 import type { Chapter } from "@/types/chapter.type";
-import type { Comment, CommentRequest } from "@/types/commentLeason.type";
+import type { CommentRequest } from "@/types/commentLeason.type";
 import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
 import type { ErrorResponse } from "@/types/common.type";
@@ -96,14 +95,13 @@ export default function LessonLearnPage() {
   }, [courseData, lessonId]);
 
 
-  const { data: commentsData, isLoading: isLoadingComments } = useQuery({
+  const { data: commentsData, } = useQuery({
     queryKey: ["comments", lessonId],
     queryFn: () => CommentApi.getCommentsByLesson(lessonId!),
     enabled: !!lessonId,
   });
   const comments = commentsData?.data ?? [];
 
-  // === 2. XỬ LÝ BÌNH LUẬN ===
 
   const commentForm = useForm<z.infer<typeof commentFormSchema>>({
     resolver: zodResolver(commentFormSchema),

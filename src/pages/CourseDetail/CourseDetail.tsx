@@ -49,7 +49,7 @@ import dayjs from "dayjs";
 import type { Chapter } from "@/types/chapter.type";
 import { AppUtils } from "@/utils/appUtils";
 import type { Lesson } from "@/types/lesson.type";
-import type { Rating, RatingRequest } from "@/types/rating.type";
+import type { RatingRequest } from "@/types/rating.type";
 import { RatingApi } from "@/api/ratingcourse.api";
 import { CartApi } from "@/api/cart.api";
 import { PaymentApi } from "@/api/payment.api";
@@ -112,9 +112,8 @@ export default function CourseDetail() {
   const reviews = reviewsData?.data.items ?? [];
 
   const buyNowMutation = useMutation({
-    mutationFn: (courseId: number) => PaymentApi.createPayment({ courseId }),
+    mutationFn: (courseId: number) => PaymentApi.createPayment({ courseIds: [courseId] }),
     onSuccess: (response) => {
-      // Chuyển hướng người dùng đến cổng VNPAY
       window.location.href = response.data.paymentUrl;
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -126,7 +125,6 @@ export default function CourseDetail() {
     e.preventDefault();
     e.stopPropagation();
 
-    // Thêm kiểm tra đăng nhập
     if (!isAuthenticated) {
       toast.info("Vui lòng đăng nhập để mua khóa học");
       navigate(routes.SIGN_IN);

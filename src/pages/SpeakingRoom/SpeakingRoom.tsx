@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, Video, VideoOff, PhoneOff } from "lucide-react";
 import useAuth from "@/context/AuthContext";
-import { fa } from "zod/v4/locales";
 import { toast } from "react-toastify";
 
 const iceServers = {
@@ -16,6 +15,7 @@ const iceServers = {
         { urls: "stun:global.stun.twilio.com:3478" },
     ],
 };
+
 
 export default function SpeakingRoom() {
     const { roomId } = useParams<{ roomId: string }>();
@@ -44,6 +44,7 @@ export default function SpeakingRoom() {
                 connectToSocket(currentStream);
             })
             .catch((err) => {
+                console.error("Error accessing media devices.", err);
                 toast.error("Bạn cần cấp quyền Camera/Mic để tham gia.");
             });
 
@@ -52,10 +53,12 @@ export default function SpeakingRoom() {
             if (stompClient.current) stompClient.current.disconnect();
             peersRef.current.forEach((p) => p.peer.destroy());
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomId]);
 
     const connectToSocket = (currentStream: MediaStream) => {
-        socket.current = new SockJS("http://localhost:8080/e-learning/ws");
+        const socketUrl = import.meta.env.SOCKET_URL || "http://localhost:8080/e-learning/ws";
+        socket.current = new SockJS(socketUrl);
         stompClient.current = Stomp.over(socket.current);
 
         stompClient.current.connect({}, () => {

@@ -2,7 +2,6 @@ import http from "./http";
 import { COMMENT_PATH } from "./path";
 import type {
     SuccessResponse,
-    SuccessResponseNoData,
 } from "@/types/common.type";
 import type { Comment, CommentRequest } from "@/types/commentLeason.type";
 

@@ -4,25 +4,24 @@ import { Input } from "@/components/ui/input";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+    Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-    MoreHorizontal, Plus, Search, Edit, Trash2, Loader2, BookOpen
+    MoreHorizontal, Plus, Edit, Trash2, Loader2, BookOpen
 } from "lucide-react";
 import DynamicPagination from "@/components/DynamicPagination";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DictationApi } from "@/api/dictation.api";
 import type { DictationTopic, DictationTopicRequest } from "@/types/dictation.type";
 import { toast } from "react-toastify";
-import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import routes from "@/routes/routes.const";
 import { Checkbox } from "@/components/ui/checkbox";
