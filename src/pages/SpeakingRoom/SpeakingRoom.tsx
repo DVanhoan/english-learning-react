@@ -37,6 +37,14 @@ export default function SpeakingRoom() {
     const stompClient = useRef<any>(null);
     const socket = useRef<any>(null);
 
+    const userIdRef = useRef(user?.id);
+    const userNameRef = useRef(user?.fullName);
+
+    useEffect(() => {
+        userIdRef.current = user?.id;
+        userNameRef.current = user?.fullName;
+    }, [user]);
+
     useEffect(() => {
         if (!user) return;
 
@@ -51,7 +59,7 @@ export default function SpeakingRoom() {
             })
             .catch((err) => {
                 console.error("Lỗi media:", err);
-                toast.error("Không thể truy cập Camera/Micro. Vui lòng kiểm tra quyền.");
+                toast.error("Không thể truy cập Camera/Micro.");
             });
 
         return () => {
@@ -74,26 +82,27 @@ export default function SpeakingRoom() {
         stompClient.current.debug = null;
 
         stompClient.current.connect({}, () => {
-            console.log(">> Đã kết nối WebSocket");
+            console.log(">> WebSocket Connected");
 
             stompClient.current.subscribe(`/topic/room/${roomId}`, (message: any) => {
                 const payload = JSON.parse(message.body);
+                const currentUserId = String(userIdRef.current);
+                const msgSenderId = String(payload.senderId || payload.userId);
 
-
-                if (String(payload.senderId) === String(user?.id) || String(payload.userId) === String(user?.id)) {
-                    console.log(">> Bỏ qua tin nhắn từ chính mình");
+                if (msgSenderId === currentUserId) {
                     return;
                 }
 
                 handleSignalMessage(payload, currentStream);
             });
 
+            // Gửi JOIN kèm tên lấy từ Ref
             stompClient.current.send(
                 `/app/join/${roomId}`,
                 {},
                 JSON.stringify({
-                    userId: user?.id,
-                    senderName: user?.fullName || "Người dùng",
+                    userId: userIdRef.current,
+                    senderName: userNameRef.current || "Người dùng",
                     type: "JOIN"
                 })
             );
@@ -103,12 +112,13 @@ export default function SpeakingRoom() {
     const handleSignalMessage = (payload: any, currentStream: MediaStream) => {
         const senderId = String(payload.senderId || payload.userId);
         const senderName = payload.senderName || "Người dùng";
+        const currentUserId = String(userIdRef.current);
 
         switch (payload.type) {
             case "JOIN":
                 if (!peersRef.current.find((p) => p.peerId === senderId)) {
-                    console.log(">> Nhận JOIN từ:", senderName, "-> Gọi lại (Initiator)");
-                    const peer = createPeer(senderId, user?.id, currentStream, senderName);
+                    console.log(">> New User Joined:", senderName);
+                    const peer = createPeer(senderId, currentUserId, currentStream, senderName);
                     const peerObj = { peerId: senderId, peer, userName: senderName };
 
                     peersRef.current.push(peerObj);
@@ -117,13 +127,11 @@ export default function SpeakingRoom() {
                 break;
 
             case "OFFER":
-                console.log(">> Nhận OFFER từ:", senderName);
-                if (String(payload.receiverId) === String(user?.id)) {
-                    if (peersRef.current.find((p) => p.peerId === senderId)) {
-                        return;
-                    }
+                if (String(payload.receiverId) === currentUserId) {
+                    if (peersRef.current.find((p) => p.peerId === senderId)) return;
 
-                    const peer = addPeer(payload.sdp, senderId, user?.id, currentStream, senderName);
+                    console.log(">> Received Offer from:", senderName);
+                    const peer = addPeer(payload.sdp, senderId, currentUserId, currentStream, senderName);
                     const peerObj = { peerId: senderId, peer, userName: senderName };
 
                     peersRef.current.push(peerObj);
@@ -132,8 +140,7 @@ export default function SpeakingRoom() {
                 break;
 
             case "ANSWER":
-                console.log(">> Nhận ANSWER từ:", senderId);
-                if (String(payload.receiverId) === String(user?.id)) {
+                if (String(payload.receiverId) === currentUserId) {
                     const item = peersRef.current.find((p) => p.peerId === senderId);
                     if (item) {
                         item.peer.signal(payload.sdp);
@@ -142,7 +149,7 @@ export default function SpeakingRoom() {
                 break;
 
             case "CANDIDATE":
-                if (String(payload.receiverId) === String(user?.id)) {
+                if (String(payload.receiverId) === currentUserId) {
                     const item = peersRef.current.find((p) => p.peerId === senderId);
                     if (item) {
                         item.peer.signal(payload.candidate);
@@ -151,12 +158,11 @@ export default function SpeakingRoom() {
                 break;
 
             case "LEAVE":
-                console.log(">> Người dùng rời phòng:", senderId);
                 {
+                    console.log(">> User Left:", senderId);
                     const leaver = peersRef.current.find(p => p.peerId === senderId);
-                    if (leaver) {
-                        leaver.peer.destroy();
-                    }
+                    if (leaver) leaver.peer.destroy();
+
                     const newPeers = peersRef.current.filter(p => p.peerId !== senderId);
                     peersRef.current = newPeers;
                     setPeers(newPeers);
@@ -165,7 +171,7 @@ export default function SpeakingRoom() {
         }
     };
 
-    const createPeer = (userToSignal: string, callerId: any, stream: MediaStream, userNameToSignal: string) => {
+    const createPeer = (userToSignal: string, callerId: string, stream: MediaStream, nameToSignal: string) => {
         const peer = new SimplePeer({
             initiator: true,
             trickle: false,
@@ -174,12 +180,14 @@ export default function SpeakingRoom() {
         });
 
         peer.on("signal", (signal) => {
+            const myName = userNameRef.current;
+
             if (signal.type === "offer") {
                 stompClient.current.send(`/app/offer/${roomId}`, {}, JSON.stringify({
                     type: "OFFER",
                     sdp: signal,
                     senderId: callerId,
-                    senderName: user?.fullName,
+                    senderName: myName,
                     receiverId: userToSignal
                 }));
             } else if ((signal as any).candidate) {
@@ -195,7 +203,7 @@ export default function SpeakingRoom() {
         return peer;
     };
 
-    const addPeer = (incomingSignal: any, callerId: string, receiverId: any, stream: MediaStream, senderName: string) => {
+    const addPeer = (incomingSignal: any, callerId: string, receiverId: string, stream: MediaStream, senderName: string) => {
         const peer = new SimplePeer({
             initiator: false,
             trickle: false,
@@ -204,12 +212,14 @@ export default function SpeakingRoom() {
         });
 
         peer.on("signal", (signal) => {
+            const myName = userNameRef.current;
+
             if (signal.type === "answer") {
                 stompClient.current.send(`/app/answer/${roomId}`, {}, JSON.stringify({
                     type: "ANSWER",
                     sdp: signal,
                     senderId: receiverId,
-                    senderName: user?.fullName,
+                    senderName: myName,
                     receiverId: callerId
                 }));
             } else if ((signal as any).candidate) {
@@ -243,10 +253,12 @@ export default function SpeakingRoom() {
     const leaveRoom = () => {
         if (stompClient.current) {
             stompClient.current.send(`/app/leave/${roomId}`, {}, JSON.stringify({
-                userId: user?.id, type: "LEAVE"
+                userId: userIdRef.current, type: "LEAVE"
             }));
             stompClient.current.disconnect();
         }
+        if (stream) stream.getTracks().forEach(track => track.stop());
+        peersRef.current.forEach(p => p.peer.destroy());
         navigate("/speaking");
     };
 
@@ -262,14 +274,9 @@ export default function SpeakingRoom() {
             </div>
 
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-4">
+                {/* My Video */}
                 <div className="relative bg-gray-900 rounded-xl overflow-hidden aspect-video border-2 border-blue-500 shadow-lg">
-                    <video
-                        ref={userVideo}
-                        muted
-                        autoPlay
-                        playsInline
-                        className="w-full h-full object-cover transform scale-x-[-1]"
-                    />
+                    <video ref={userVideo} muted autoPlay playsInline className="w-full h-full object-cover transform scale-x-[-1]" />
                     <div className="absolute bottom-3 left-3 bg-black/60 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 backdrop-blur-sm">
                         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                         Bạn ({user?.fullName})
@@ -282,34 +289,20 @@ export default function SpeakingRoom() {
                     )}
                 </div>
 
+                {/* Peers Video */}
                 {peers.map((p) => (
                     <VideoCard key={p.peerId} peer={p.peer} userName={p.userName} />
                 ))}
             </div>
 
             <div className="h-20 flex items-center justify-center gap-6 mt-4 bg-gray-900 rounded-2xl shadow-xl border border-gray-800">
-                <Button
-                    onClick={toggleMute}
-                    variant={isMuted ? "destructive" : "secondary"}
-                    className={`rounded-full h-12 w-12 p-0 transition-all ${isMuted ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                >
+                <Button onClick={toggleMute} variant={isMuted ? "destructive" : "secondary"} className="rounded-full h-12 w-12 p-0">
                     {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
                 </Button>
-
-                <Button
-                    onClick={toggleVideo}
-                    variant={isVideoOff ? "destructive" : "secondary"}
-                    className={`rounded-full h-12 w-12 p-0 transition-all ${isVideoOff ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                >
+                <Button onClick={toggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="rounded-full h-12 w-12 p-0">
                     {isVideoOff ? <VideoOff size={20} /> : <Video size={20} />}
                 </Button>
-
-                <div className="w-px h-8 bg-gray-700 mx-2"></div>
-
-                <Button
-                    onClick={leaveRoom}
-                    className="bg-red-600 hover:bg-red-700 rounded-full px-8 h-12 font-medium transition-all hover:scale-105"
-                >
+                <Button onClick={leaveRoom} className="bg-red-600 hover:bg-red-700 rounded-full px-8">
                     <PhoneOff className="mr-2 h-5 w-5" /> Rời phòng
                 </Button>
             </div>
@@ -322,20 +315,13 @@ const VideoCard = ({ peer, userName }: { peer: Instance, userName: string }) => 
 
     useEffect(() => {
         peer.on("stream", (stream) => {
-            if (ref.current) {
-                ref.current.srcObject = stream;
-            }
+            if (ref.current) ref.current.srcObject = stream;
         });
     }, [peer]);
 
     return (
         <div className="relative bg-gray-900 rounded-xl overflow-hidden aspect-video border border-gray-700 shadow-lg">
-            <video
-                ref={ref}
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover"
-            />
+            <video ref={ref} autoPlay playsInline className="w-full h-full object-cover" />
             <div className="absolute bottom-3 left-3 bg-black/60 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 backdrop-blur-sm">
                 <User size={14} className="text-blue-400" /> {userName}
             </div>
