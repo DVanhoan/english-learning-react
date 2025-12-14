@@ -178,12 +178,14 @@ export default function SpeakingRoom() {
                 break;
 
             case "LEAVE":
-                const leaver = peersRef.current.find(p => p.peerId === senderId);
-                if (leaver) leaver.peer.destroy();
-                const newPeers = peersRef.current.filter(p => p.peerId !== senderId);
-                peersRef.current = newPeers;
-                setPeers(newPeers);
-                break;
+                {
+                    const leaver = peersRef.current.find(p => p.peerId === senderId);
+                    if (leaver) leaver.peer.destroy();
+                    const newPeers = peersRef.current.filter(p => p.peerId !== senderId);
+                    peersRef.current = newPeers;
+                    setPeers(newPeers);
+                    break;
+                }
         }
     };
 
