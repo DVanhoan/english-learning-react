@@ -81,6 +81,7 @@ export default function SpeakingRoom() {
 
 
                 if (String(payload.senderId) === String(user?.id) || String(payload.userId) === String(user?.id)) {
+                    console.log(">> Bỏ qua tin nhắn từ chính mình");
                     return;
                 }
 
