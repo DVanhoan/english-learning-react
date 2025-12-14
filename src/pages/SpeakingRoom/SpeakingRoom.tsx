@@ -57,7 +57,7 @@ export default function SpeakingRoom() {
     }, [roomId]);
 
     const connectToSocket = (currentStream: MediaStream) => {
-        const socketUrl = import.meta.env.SOCKET_URL || "http://localhost:8080/e-learning/ws";
+        const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:8080/e-learning/ws";
         socket.current = new SockJS(socketUrl);
         stompClient.current = Stomp.over(socket.current);
 

@@ -31,7 +31,7 @@ class Http {
     this.refreshFailed = false;
 
     this.instance = axios.create({
-      baseURL: import.meta.env.API_URL || "http://localhost:8080/e-learning",
+      baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/e-learning",
       timeout: 1000 * 60 * 15,
       headers: {
         "Content-Type": "application/json",
