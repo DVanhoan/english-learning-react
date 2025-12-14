@@ -138,12 +138,21 @@ export default function SpeakingRoom() {
         });
 
         peer.on("signal", (signal) => {
-            stompClient.current.send(`/app/offer/${roomId}`, {}, JSON.stringify({
-                type: "OFFER",
-                sdp: signal,
-                senderId: callerId,
-                receiverId: userToSignal
-            }));
+            if (signal.type === "offer") {
+                stompClient.current.send(`/app/offer/${roomId}`, {}, JSON.stringify({
+                    type: "OFFER",
+                    sdp: signal,
+                    senderId: callerId,
+                    receiverId: userToSignal
+                }));
+            } else if ((signal as any).candidate) {
+                stompClient.current.send(`/app/candidate/${roomId}`, {}, JSON.stringify({
+                    type: "CANDIDATE",
+                    candidate: signal,
+                    senderId: callerId,
+                    receiverId: userToSignal
+                }));
+            }
         });
 
         return peer;
@@ -158,12 +167,21 @@ export default function SpeakingRoom() {
         });
 
         peer.on("signal", (signal) => {
-            stompClient.current.send(`/app/answer/${roomId}`, {}, JSON.stringify({
-                type: "ANSWER",
-                sdp: signal,
-                senderId: receiverId,
-                receiverId: callerId
-            }));
+            if (signal.type === "answer") {
+                stompClient.current.send(`/app/answer/${roomId}`, {}, JSON.stringify({
+                    type: "ANSWER",
+                    sdp: signal,
+                    senderId: receiverId,
+                    receiverId: callerId
+                }));
+            } else if ((signal as any).candidate) {
+                stompClient.current.send(`/app/candidate/${roomId}`, {}, JSON.stringify({
+                    type: "CANDIDATE",
+                    candidate: signal,
+                    senderId: receiverId,
+                    receiverId: callerId
+                }));
+            }
         });
 
         peer.signal(incomingSignal);
