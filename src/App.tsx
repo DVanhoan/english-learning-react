@@ -1,4 +1,3 @@
-// import GlobalLoading from "./components/GlobalLoading";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import ScrollToTop from "./components/ScrollToTop";
 import AuthProvider from "./context/AuthContext/auth.context";

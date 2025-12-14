@@ -31,7 +31,7 @@ class Http {
     this.refreshFailed = false;
 
     this.instance = axios.create({
-      baseURL: "http://localhost:8080/e-learning",
+      baseURL: import.meta.env.API_URL || "http://localhost:8080/e-learning",
       timeout: 1000 * 60 * 15,
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,6 @@ class Http {
       },
       async (error: AxiosError<ErrorResponse>) => {
         if (!error.response) {
-          // toast.error("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại đường truyền.");
           return Promise.reject(error);
         }
 
