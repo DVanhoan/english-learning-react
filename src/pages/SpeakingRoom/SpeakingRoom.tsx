@@ -151,7 +151,6 @@ export default function SpeakingRoom() {
 
             case "OFFER":
                 if (String(payload.receiverId) === currentUserId) {
-                    // Chặn duplicate peer lần nữa cho chắc
                     if (peersRef.current.find((p) => p.peerId === senderId)) return;
 
                     console.log(">> Received Offer from:", senderName);
@@ -258,11 +257,9 @@ export default function SpeakingRoom() {
             }));
             stompClient.current.disconnect();
         }
-        // Tắt đèn camera
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }
-        // Dọn dẹp cờ
         isInitiated.current = false;
         navigate("/speaking");
     };
