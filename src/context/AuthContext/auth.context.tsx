@@ -43,9 +43,9 @@ export default function AuthProvider({
     enabled: Boolean(accessToken),
   });
 
-  const isHydrating =
-    Boolean(accessToken) && !state.isAuthenticated && isPending;
-  if (isHydrating) return <LogoLoader />;
+  // const isHydrating =
+  //   Boolean(accessToken) && !state.isAuthenticated && isPending;
+  // if (isHydrating) return <LogoLoader />;
 
   return (
     <>
