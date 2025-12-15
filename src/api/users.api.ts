@@ -20,7 +20,7 @@ export class UserApi {
     );
     return response.data;
   };
-  static getProfile = async () => {
+  static getProfile = async (p0: { timeout: number; }) => {
     const response = await http.get<UserResponse>(USERS_PATH.ME);
     return response.data;
   };

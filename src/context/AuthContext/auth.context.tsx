@@ -31,21 +31,31 @@ export default function AuthProvider({
 
   const { isPending } = useQuery({
     queryKey: ["users", "me"],
-    queryFn: () =>
-      UserApi.getProfile()
-        .then((response) => {
+    queryFn: async () => {
+      try {
+        const response = await UserApi.getProfile({
+          timeout: 10000
+        });
+
+        if (response.data) {
           dispatch(signIn({ isAuthenticated: true, user: response.data }));
           return response;
-        })
-        .catch(() => {
-          dispatch(signOut());
-        }),
+        }
+        throw new Error("No data");
+      } catch (error) {
+        console.log("Lỗi kết nối hoặc timeout:", error);
+        dispatch(signOut());
+        throw error;
+      }
+    },
     enabled: Boolean(accessToken),
+    retry: 0,
+    refetchOnWindowFocus: false,
   });
 
-  // const isHydrating =
-  //   Boolean(accessToken) && !state.isAuthenticated && isPending;
-  // if (isHydrating) return <LogoLoader />;
+  const isHydrating =
+    Boolean(accessToken) && !state.isAuthenticated && isPending;
+  if (isHydrating) return <LogoLoader />;
 
   return (
     <>
